@@ -8,6 +8,7 @@ import report.model.Feature;
 import report.model.Scenario;
 import report.obeserver.ReportObserver;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +16,17 @@ import java.util.List;
 @Getter
 public class GlobalExecutionContext {
 
+    @Autowired
+    private ReportObserver reportObserver;
     @Value("${output.path}")
     private String reportPath;
     private List<Feature> featureList = new ArrayList<>();
     private Feature currentFeature;
     private Scenario currentScenario;
 
-    @Autowired
-    private ReportObserver observer;
+    public void startTestExecution() {
+        reportObserver.onExecutionStarted("report", Path.of(reportPath));
+    }
 
     public void startFeature(Feature feature) {
         this.currentFeature = feature;
@@ -35,7 +39,7 @@ public class GlobalExecutionContext {
     }
 
     public void endScenario(Scenario scenario) {
-        observer.onScenarioFinished(scenario);
+        reportObserver.onScenarioFinished(scenario);
     }
 
     public void addFeature(Feature feature) {
