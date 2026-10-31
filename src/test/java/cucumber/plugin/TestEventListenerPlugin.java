@@ -46,6 +46,7 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
     }
 
     private void onTestRunStarted(TestRunStarted testRunStarted) {
+
     }
 
     private void onTestSourceRead(TestSourceRead testSourceRead) {
@@ -55,9 +56,10 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
 
     private void onTestCaseStarted(TestCaseStarted testCaseStarted) {
         globalExecutionContext = SpringContext.getBean(GlobalExecutionContext.class);
+        globalExecutionContext.startTestExecution();
 
         Feature feature = features.get(testCaseStarted.getTestCase().getUri());
-        Scenario scenario = ScenarioFactory.buildScenario(testCaseStarted.getTestCase());
+        Scenario scenario = ScenarioFactory.buildScenario(testCaseStarted.getTestCase(), feature);
         globalExecutionContext.startFeature(feature);
         globalExecutionContext.startScenario(scenario);
     }
