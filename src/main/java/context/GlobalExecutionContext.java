@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import report.model.Feature;
 import report.model.Scenario;
 import report.obeserver.ReportObserver;
+import utils.DateUtils;
+import utils.DirectoryUtils;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,9 +27,15 @@ public class GlobalExecutionContext {
     private List<Feature> featureList = new ArrayList<>();
     private Feature currentFeature;
     private Scenario currentScenario;
+    private String executionStartTimestamp;
 
     public void startTestExecution() {
-        reportObserver.onExecutionStarted(reportName, Path.of(reportOutputPath));
+        if (!isStartTimeSet()) {
+            executionStartTimestamp = DateUtils.currentTimestamp(DateUtils.YYYYMMDD_HHMMSS);
+            Path executionPath = DirectoryUtils.createDirectory(executionStartTimestamp, Path.of(reportOutputPath));
+            reportObserver.onExecutionStarted(reportName, executionPath);
+            reportOutputPath = executionPath.toString();
+        }
     }
 
     public void startFeature(Feature feature) {
@@ -53,7 +61,7 @@ public class GlobalExecutionContext {
         parentFeature.addScenario(scenario);
     }
 
-    public Scenario getCurrentScenario() {
-        return currentScenario;
+    private boolean isStartTimeSet() {
+        return executionStartTimestamp != null;
     }
 }
