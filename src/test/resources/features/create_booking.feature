@@ -1,3 +1,4 @@
+@create_booking
 Feature: Create booking
 
   Scenario Outline: Successfully create a new booking
