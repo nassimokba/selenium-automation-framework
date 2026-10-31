@@ -5,16 +5,23 @@ import context.SpringContext;
 import io.cucumber.plugin.ConcurrentEventListener;
 import io.cucumber.plugin.event.*;
 import org.slf4j.Logger;
-import report.model.Scenario;
-import report.model.StepScenario;
+import report.factory.FeatureFactory;
 import report.factory.ScenarioFactory;
 import report.factory.StepScenarioFactory;
+import report.model.Feature;
+import report.model.Scenario;
+import report.model.StepScenario;
 import utils.JsonExporter;
 import utils.LoggerUtils;
+
+import java.net.URI;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TestEventListenerPlugin implements ConcurrentEventListener {
 
+    private final Map<URI, Feature> features = new LinkedHashMap<>();
     private Logger logger = LoggerUtils.getLogger(TestEventListenerPlugin.class);
     private GlobalExecutionContext globalExecutionContext;
 
@@ -42,13 +49,17 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
     }
 
     private void onTestSourceRead(TestSourceRead testSourceRead) {
+        Feature feature = FeatureFactory.buildFeature(testSourceRead);
+        features.put(testSourceRead.getUri(), feature);
     }
 
     private void onTestCaseStarted(TestCaseStarted testCaseStarted) {
         globalExecutionContext = SpringContext.getBean(GlobalExecutionContext.class);
+
+        Feature feature = features.get(testCaseStarted.getTestCase().getUri());
         Scenario scenario = ScenarioFactory.buildScenario(testCaseStarted.getTestCase());
-        globalExecutionContext.addScenario(scenario);
-        logger.debug("onTestCaseStarted: {}", scenario.getName());
+        globalExecutionContext.startFeature(feature);
+        globalExecutionContext.startScenario(scenario);
     }
 
     private void onTestStepStarted(TestStepStarted testStep) {
@@ -63,9 +74,10 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
 
     private void onTestStepFinished(TestStepFinished testStep) {
         Scenario currentScenario = getCurrentScenario();
-        if (!currentScenario.getStepList().isEmpty()) {
+        if (currentScenario != null && !currentScenario.getStepList().isEmpty()) {
             currentScenario.getCurrentStep().updateStatus(testStep.getResult().getStatus().name());
-            if (testStep.getResult().getStatus().equals(Status.FAILED)) currentScenario.getCurrentStep().setErrorMessage(testStep.getResult().getError().getMessage());
+            if (testStep.getResult().getStatus().equals(Status.FAILED))
+                currentScenario.getCurrentStep().setErrorMessage(testStep.getResult().getError().getMessage());
             logger.debug("onTestStepFinished - {} {} {}",
                     currentScenario.getCurrentStep().getKeyword(),
                     currentScenario.getCurrentStep().getText(),
@@ -76,10 +88,12 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
     private void onTestCaseFinished(TestCaseFinished testCaseFinished) {
         Scenario currentScenario = getCurrentScenario();
         currentScenario.setStatus(testCaseFinished.getResult().getStatus().name());
-        if (testCaseFinished.getResult().getStatus().equals(Status.FAILED)) currentScenario.setErrorMessage(testCaseFinished.getResult().getError().getMessage());
-        JsonExporter.writeList(globalExecutionContext.getScenariosList(),
+        if (testCaseFinished.getResult().getStatus().equals(Status.FAILED))
+            currentScenario.setErrorMessage(testCaseFinished.getResult().getError().getMessage());
+        JsonExporter.writeList(globalExecutionContext.getCurrentFeature().getScenarios(),
                 Path.of(globalExecutionContext.getReportPath(), "scenarios.json"));
         logger.debug("onTestCaseFinished - status {}", getCurrentScenario().getStatus());
+        globalExecutionContext.endScenario(currentScenario);
     }
 
     public void onTestRunFinished(TestRunFinished testRunFinished) {
