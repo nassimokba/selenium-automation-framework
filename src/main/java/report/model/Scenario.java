@@ -3,6 +3,8 @@ package report.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.net.URI;
 import java.util.List;
 
 @Builder
@@ -10,6 +12,8 @@ import java.util.List;
 @Setter
 public class Scenario {
 
+    private URI uri;
+    private int line;
     private String name;
     private String status;
     private String errorMessage;

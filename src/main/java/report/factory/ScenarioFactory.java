@@ -9,6 +9,8 @@ public class ScenarioFactory {
 
     public static Scenario buildScenario(TestCase testCase) {
         return Scenario.builder()
+                .uri(testCase.getUri())
+                .line(testCase.getLocation().getLine())
                 .name(testCase.getName())
                 .stepList(new ArrayList<>())
                 .build();
