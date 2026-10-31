@@ -16,10 +16,11 @@ public class Scenario {
     private int line;
     private String featureName;
     private String name;
-    private String status;
-    private String errorMessage;
     private List<StepScenario> stepList;
     private StepScenario currentStep;
+    private String status;
+    private String errorMessage;
+    private byte[] screenshot;
 
     public void addStep(StepScenario step) {
         stepList.add(step);
