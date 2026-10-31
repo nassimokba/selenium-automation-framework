@@ -18,14 +18,16 @@ public class GlobalExecutionContext {
 
     @Autowired
     private ReportObserver reportObserver;
-    @Value("${output.path}")
-    private String reportPath;
+    @Value("${report.name}")
+    private String reportName;
+    @Value("${report.output.path}")
+    private String reportOutputPath;
     private List<Feature> featureList = new ArrayList<>();
     private Feature currentFeature;
     private Scenario currentScenario;
 
     public void startTestExecution() {
-        reportObserver.onExecutionStarted("report", Path.of(reportPath));
+        reportObserver.onExecutionStarted(reportName, Path.of(reportOutputPath));
     }
 
     public void startFeature(Feature feature) {
