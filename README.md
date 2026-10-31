@@ -22,15 +22,17 @@ UI test automation framework built with Selenium, Spring and Cucumber.
 
 ```bash
 # Run all features
-mvn test -Dtest=CucumberAllRunner
+mvn test -Dtest=AllFeaturesRunner
+mvn test -Dtest=BookingFeatureRunner
+mvn test -Dtest=LoginFeatureAllRunner
 
 # Run a single feature file 
-mvn test -Dtest=CucumberAllRunner -Dcucumber.features=src/test/resources/features/login.feature
-mvn test -Dtest=CucumberAllRunner -Dcucumber.features=src/test/resources/features/create_booking.feature
+mvn test -Dtest=AllFeaturesRunner -Dcucumber.features=src/test/resources/features/login.feature
+mvn test -Dtest=AllFeaturesRunner -Dcucumber.features=src/test/resources/features/create_booking.feature
 
 # Run scenarios by tag
-mvn test -Dtest=CucumberAllRunner -Dcucumber.filter.tags="@login"
-mvn test -Dtest=CucumberAllRunner -Dcucumber.filter.tags="@create_booking"
+mvn test -Dtest=AllFeaturesRunner -Dcucumber.filter.tags="@login"
+mvn test -Dtest=AllFeaturesRunner -Dcucumber.filter.tags="@create_booking"
 ```
 
 Each run writes its report to a timestamped folder under `output/`.
