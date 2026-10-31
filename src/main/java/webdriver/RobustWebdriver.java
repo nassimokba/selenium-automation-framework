@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,11 +25,11 @@ public class RobustWebdriver implements WebDriver {
         ((JavascriptExecutor) webdriver).executeScript(jsScript, args);
     }
 
-    public File takeScreenshot(String path) {
+    public File takeScreenshot(String path, String name) {
         File target;
         try {
             File src = ((TakesScreenshot) webdriver).getScreenshotAs(OutputType.FILE);
-            target = new File(String.format("%s/screenshot.png", path));
+            target = new File(String.format("%s/%s.png", path, name));
             FileUtils.copyFile(src, target);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -36,8 +37,8 @@ public class RobustWebdriver implements WebDriver {
         return target;
     }
 
-    public File takeFullPageScreenshot(String path) {
-        File target = new File(String.format("%s/screenshot.png", path));
+    public File takeFullPageScreenshot(String path, String filename) {
+        File target = new File(String.format("%s/%s.png", path, filename));
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("captureBeyondViewport", true);
