@@ -11,11 +11,9 @@ import report.factory.StepScenarioFactory;
 import report.model.Feature;
 import report.model.Scenario;
 import report.model.StepScenario;
-import utils.JsonExporter;
 import utils.LoggerUtils;
 
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -92,8 +90,6 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
         currentScenario.setStatus(testCaseFinished.getResult().getStatus().name());
         if (testCaseFinished.getResult().getStatus().equals(Status.FAILED))
             currentScenario.setErrorMessage(testCaseFinished.getResult().getError().getMessage());
-        JsonExporter.writeList(globalExecutionContext.getCurrentFeature().getScenarios(),
-                Path.of(globalExecutionContext.getReportPath(), "scenarios.json"));
         logger.debug("onTestCaseFinished - status {}", getCurrentScenario().getStatus());
         globalExecutionContext.endScenario(currentScenario);
     }
