@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 @CucumberContextConfiguration
 @ContextConfiguration(classes = CucumberTestConfig.class)
-@ComponentScan(basePackages = {"webdriver", "context", "pages"})
+@ComponentScan(basePackages = {"webdriver", "context", "report", "pages"})
 @PropertySource("classpath:config.properties")
-public class CucumberTestConfig { }
+public class CucumberTestConfig {
+}
