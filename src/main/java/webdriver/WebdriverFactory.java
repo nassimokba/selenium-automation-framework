@@ -10,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.util.Locale;
 
 @Component
@@ -29,16 +30,19 @@ public class WebdriverFactory {
             case "FIREFOX":
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments(BROWSER_ARGS);
-                driver = new FirefoxDriver();
+                firefoxOptions.setCapability("webSocketUrl", true);
+                driver = new FirefoxDriver(firefoxOptions);
                 break;
             case "CHROME":
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments(BROWSER_ARGS);
+                chromeOptions.setCapability("webSocketUrl", true);
                 driver = new ChromeDriver(chromeOptions);
                 break;
             case "EDGE":
                 EdgeOptions edgeOptions = new EdgeOptions();
                 edgeOptions.addArguments(BROWSER_ARGS);
+                edgeOptions.setCapability("webSocketUrl", true);
                 driver = new EdgeDriver(edgeOptions);
                 break;
             default:
