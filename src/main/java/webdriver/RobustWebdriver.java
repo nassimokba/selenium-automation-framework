@@ -2,6 +2,12 @@ package webdriver;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
+import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.module.LogInspector;
+import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -74,6 +80,38 @@ public class RobustWebdriver implements WebDriver {
 
     public Actions actions() {
         return new Actions(webdriver);
+    }
+
+    public Object getCapability(String capabilityName) {
+        return ((HasCapabilities) webdriver).getCapabilities().getCapability(capabilityName);
+    }
+
+    public Map<String, Object> getCapabilities() {
+        return ((HasCapabilities) webdriver).getCapabilities().asMap();
+    }
+
+    public LogInspector createLogInspector() {
+        return new LogInspector(webdriver);
+    }
+
+    public Network createNetwork() {
+        return new Network(webdriver);
+    }
+
+    public String addRequestBodyCollector() {
+        BiDi bidi = ((HasBiDi) webdriver).getBiDi();
+        return bidi.send(new Command<>(
+                "network.addDataCollector",
+                Map.of("dataTypes", List.of("request"), "maxEncodedDataSize", 1_000_000),
+                ConverterFunctions.map("collector", String.class)));
+    }
+
+    public Map<?, ?> getRequestBody(String requestId) {
+        BiDi bidi = ((HasBiDi) webdriver).getBiDi();
+        return bidi.send(new Command<>(
+                "network.getData",
+                Map.of("dataType", "request", "request", requestId),
+                ConverterFunctions.map("bytes", Map.class)));
     }
 
     @Override
