@@ -4,9 +4,12 @@ import context.GlobalExecutionContext;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import utils.LoggerUtils;
 import webdriver.WebdriverManager;
+import webdriver.bidi.BrowserMonitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class CucumberHooks {
+
+    private Logger logger = LoggerUtils.getLogger(CucumberHooks.class);
 
     @Value("${base.url}")
     private String baseUrl;
@@ -23,9 +28,12 @@ public class CucumberHooks {
 
     @Autowired
     private GlobalExecutionContext globalExecutionContext;
+    @Autowired
+    private BrowserMonitor browserMonitor;
 
     @Before
     public void before() {
+        browserMonitor.start();
         webdriverManager.openUrl(baseUrl);
     }
 
@@ -33,6 +41,7 @@ public class CucumberHooks {
     public void after(Scenario scenario) {
         if (scenario.isFailed()) handleFailedScenario(globalExecutionContext.getCurrentScenario());
         webdriverManager.quitDriver();
+        browserMonitor.stop();
     }
 
     private void handleFailedScenario(report.model.Scenario scenario) {
