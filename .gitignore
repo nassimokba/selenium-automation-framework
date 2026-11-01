@@ -6,6 +6,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 output/
+.proxyai
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -18,9 +19,6 @@ output/
 target/
 *.iml
 *.ipr
-
-#ProxyAI
-.proxyai
 
 # Gradle
 .idea/**/gradle.xml
