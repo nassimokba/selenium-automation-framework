@@ -3,6 +3,8 @@ package report.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import webdriver.model.ConsoleError;
+import webdriver.model.NetworkError;
 
 import java.net.URI;
 import java.util.List;
@@ -21,6 +23,8 @@ public class Scenario {
     private String status;
     private String errorMessage;
     private byte[] screenshot;
+    private ConsoleError consoleError;
+    private NetworkError networkError;
 
     public void addStep(StepScenario step) {
         stepList.add(step);
@@ -29,5 +33,13 @@ public class Scenario {
 
     public StepScenario getCurrentStep() {
         return currentStep;
+    }
+
+    public void addConsoleError(ConsoleError consoleError) {
+        this.consoleError = consoleError;
+    }
+
+    public void addNetworkError(NetworkError networkError) {
+        this.networkError = networkError;
     }
 }
