@@ -11,6 +11,7 @@ import report.factory.StepScenarioFactory;
 import report.model.Feature;
 import report.model.Scenario;
 import report.model.StepScenario;
+import utils.DateUtils;
 import utils.LoggerUtils;
 import java.net.URI;
 import java.util.LinkedHashMap;
@@ -59,6 +60,7 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
         Scenario scenario = ScenarioFactory.buildScenario(testCaseStarted.getTestCase(), feature);
         globalExecutionContext.startFeature(feature);
         globalExecutionContext.startScenario(scenario);
+
     }
 
     private void onTestStepStarted(TestStepStarted testStep) {
@@ -86,6 +88,7 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
 
     private void onTestCaseFinished(TestCaseFinished testCaseFinished) {
         Scenario currentScenario = getCurrentScenario();
+        currentScenario.setEndTime(DateUtils.getNow());
         currentScenario.setStatus(testCaseFinished.getResult().getStatus().name());
         if (testCaseFinished.getResult().getStatus().equals(Status.FAILED))
             currentScenario.setErrorMessage(testCaseFinished.getResult().getError().getMessage());
