@@ -50,7 +50,7 @@ public class CucumberHooks {
             String screenshotPath = Path.of(globalExecutionContext.getReportOutputPath()).toString();
             File screenshot = webdriverManager.getWebdriver()
                     .takeScreenshot(screenshotPath,
-                            String.format("%s_error", scenario.getName()));
+                            String.format("%s_error", scenario.getId()));
 
             byte[] screenshotBytes = Files.readAllBytes(screenshot.toPath());
             scenario.setScreenshot(screenshotBytes);
