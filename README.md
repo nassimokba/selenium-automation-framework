@@ -18,7 +18,7 @@ UI test automation framework built with Selenium, Spring and Cucumber.
 
 ## Running locally
 
-**Prerequisites:** JDK, Maven, Firefox, Chrome or Edge (the browser is set in `config.properties`).
+**Prerequisites:** JDK, Maven, Allure CLI, Firefox, Chrome or Edge (the browser is set in `config.properties`).
 
 ```bash
 # Run all features
@@ -34,8 +34,19 @@ mvn test -Dtest=AllFeaturesRunner -Dcucumber.features=src/test/resources/feature
 mvn test -Dtest=AllFeaturesRunner -Dcucumber.filter.tags="@login"
 mvn test -Dtest=AllFeaturesRunner -Dcucumber.filter.tags="@create_booking"
 ```
-
+**ExtentReports:**
 Each run writes its report to a timestamped folder under `output/`.
+
+**Allure:**
+Each run writes its report in `output/allure-report` folder
+```bash
+# Run to generate Allure report
+allure generate output/<timestamp> --clean -o output/allure-report
+```
+```bash
+# Run to open Allure generated report
+allure open output/allure-report   
+```
 
 ## Author
 
