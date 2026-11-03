@@ -13,7 +13,7 @@ public class ScenarioFactory {
         String tag = testCase.getTags().get(index).replace("@", "");
         return Scenario.builder()
                 .uri(testCase.getUri())
-                .featureName(feature.getName())
+                .parentFeature(feature)
                 .line(testCase.getLocation().getLine())
                 .name(tag)
                 .description(testCase.getName())
