@@ -14,6 +14,7 @@ import report.model.StepScenario;
 import utils.DateUtils;
 import utils.LoggerUtils;
 import java.net.URI;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
 
     private void onTestCaseFinished(TestCaseFinished testCaseFinished) {
         Scenario currentScenario = getCurrentScenario();
-        currentScenario.setEndTime(DateUtils.getNow());
+        currentScenario.setEndTime(Instant.now());
         currentScenario.setStatus(testCaseFinished.getResult().getStatus().name());
         if (testCaseFinished.getResult().getStatus().equals(Status.FAILED))
             currentScenario.setErrorMessage(testCaseFinished.getResult().getError().getMessage());

@@ -5,6 +5,7 @@ import report.model.Feature;
 import report.model.Scenario;
 import utils.DateUtils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ScenarioFactory {
                 .parentFeature(feature)
                 .line(testCase.getLocation().getLine())
                 .id(tag)
-                .startTime(DateUtils.getNow())
+                .startTime(Instant.now())
                 .description(testCase.getName())
                 .stepList(new ArrayList<>())
                 .build();
