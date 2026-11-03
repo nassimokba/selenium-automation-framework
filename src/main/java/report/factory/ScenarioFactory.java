@@ -3,8 +3,12 @@ package report.factory;
 import io.cucumber.plugin.event.TestCase;
 import report.model.Feature;
 import report.model.Scenario;
+import utils.DateUtils;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ScenarioFactory {
 
@@ -16,6 +20,7 @@ public class ScenarioFactory {
                 .parentFeature(feature)
                 .line(testCase.getLocation().getLine())
                 .id(tag)
+                .startTime(DateUtils.getNow())
                 .description(testCase.getName())
                 .stepList(new ArrayList<>())
                 .build();
