@@ -18,6 +18,7 @@ public class Scenario {
     private int line;
     private String featureName;
     private String name;
+    private String description;
     private List<StepScenario> stepList;
     private StepScenario currentStep;
     private String status;

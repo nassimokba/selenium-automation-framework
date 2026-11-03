@@ -11,6 +11,7 @@ import java.util.List;
 public class Feature {
     private final URI uri;
     private final String name;
+    private final String description;
     private final List<Scenario> scenarios;
 
     public void addScenario(Scenario scenario) {
