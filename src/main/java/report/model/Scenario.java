@@ -1,5 +1,6 @@
 package report.model;
 
+import io.cucumber.java.sl.In;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import webdriver.model.NetworkError;
 
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -21,8 +23,8 @@ public class Scenario {
     private Feature parentFeature;
     private String id;
     private String description;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private Instant startTime;
+    private Instant endTime;
     private List<StepScenario> stepList;
     private StepScenario currentStep;
     private String status;
@@ -45,11 +47,12 @@ public class Scenario {
     public String getDuration() {
         Duration duration = Duration.between(startTime, endTime);
 
-        return String.format("%02d:%02d:%02d",
-                duration.toHours(),
-                duration.toMinutesPart(),
-                duration.toSecondsPart());
+        return String.format("%dm %ds %dms",
+                duration.toMinutes(),
+                duration.toSecondsPart(),
+                duration.toMillisPart());
     }
+
     public void addConsoleError(ConsoleError consoleError) {
         this.consoleError = consoleError;
     }
