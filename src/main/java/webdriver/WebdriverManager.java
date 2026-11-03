@@ -9,9 +9,14 @@ public class WebdriverManager {
     @Autowired
     private WebdriverFactory webdriverFactory;
     private RobustWebdriver webdriver;
+    private final WebdriverConfig config;
+
+    public WebdriverManager(WebdriverConfig config) {
+        this.config = config;
+    }
 
     public RobustWebdriver getWebdriver() {
-        if (webdriver == null) webdriver = webdriverFactory.create();
+        if (webdriver == null) webdriver = webdriverFactory.create(config);
         return webdriver;
     }
 
