@@ -17,8 +17,7 @@ public class Scenario {
     private URI uri;
     private int line;
     private Feature parentFeature;
-    private String featureName;
-    private String name;
+    private String id;
     private String description;
     private List<StepScenario> stepList;
     private StepScenario currentStep;
@@ -32,6 +31,8 @@ public class Scenario {
         stepList.add(step);
         currentStep = step;
     }
+
+    public String getName() { return String.format("%s: %s", id, description); }
 
     public StepScenario getCurrentStep() {
         return currentStep;

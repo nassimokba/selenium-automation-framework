@@ -10,11 +10,13 @@ import java.util.List;
 @Getter
 public class Feature {
     private final URI uri;
-    private final String name;
+    private final String id;
     private final String description;
     private final List<Scenario> scenarios;
 
     public void addScenario(Scenario scenario) {
         scenarios.add(scenario);
     }
+
+    public String getName() { return String.format("%s: %s", id, description); }
 }
