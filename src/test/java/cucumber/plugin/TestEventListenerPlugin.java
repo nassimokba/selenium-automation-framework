@@ -12,7 +12,6 @@ import report.model.Feature;
 import report.model.Scenario;
 import report.model.StepScenario;
 import utils.LoggerUtils;
-
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
