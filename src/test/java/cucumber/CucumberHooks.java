@@ -28,6 +28,7 @@ public class CucumberHooks {
 
     @Autowired
     private GlobalExecutionContext globalExecutionContext;
+
     @Autowired
     private BrowserMonitor browserMonitor;
 
@@ -46,13 +47,14 @@ public class CucumberHooks {
 
     private void handleFailedScenario(report.model.Scenario scenario) {
         try {
-            String screenshotPath = Path.of(globalExecutionContext.getReportOutputPath(), "screenshots").toString();
+            String screenshotPath = Path.of(globalExecutionContext.getReportOutputPath()).toString();
             File screenshot = webdriverManager.getWebdriver()
                     .takeScreenshot(screenshotPath,
                             String.format("%s_error", scenario.getName()));
 
             byte[] screenshotBytes = Files.readAllBytes(screenshot.toPath());
             scenario.setScreenshot(screenshotBytes);
+            Files.deleteIfExists(screenshot.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
