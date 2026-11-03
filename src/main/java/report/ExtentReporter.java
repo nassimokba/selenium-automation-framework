@@ -47,7 +47,7 @@ public class ExtentReporter implements IReporter {
 
     @Override
     public void createScenario(Scenario scenario) {
-        ExtentTest node = getOrCreateFeature(scenario.getFeatureName()).createNode(scenario.getName());
+        ExtentTest node = getOrCreateFeature(scenario.getParentFeature().getName()).createNode(scenario.getName());
         for (StepScenario stepScenario : scenario.getStepList())
             node.log(Status.PASS, stepScenario.getKeyword() + stepScenario.getText());
         if (scenario.getErrorMessage() != null) {
@@ -57,7 +57,7 @@ public class ExtentReporter implements IReporter {
                         formatScreenshot(base64)));
             } else node.fail(scenario.getErrorMessage());
         }
-        logger.info("createScenario {}", scenario.getName());
+        logger.info("createScenario {}", scenario.getId());
     }
 
     @Override
