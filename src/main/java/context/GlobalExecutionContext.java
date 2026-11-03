@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import report.model.Feature;
 import report.model.Scenario;
-import report.obeserver.ReportObserver;
+import report.observer.ReportObserver;
 import utils.DateUtils;
 import utils.DirectoryUtils;
 
