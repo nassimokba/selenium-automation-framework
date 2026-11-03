@@ -1,4 +1,4 @@
-package report.obeserver;
+package report.observer;
 
 import report.model.Scenario;
 
