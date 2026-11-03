@@ -40,10 +40,15 @@ public class AllureReporter implements IReporter {
     public void createScenario(Scenario scenario) {
         String uuid = UUID.randomUUID().toString();
 
+        long start = scenario.getStartTime().toEpochMilli();
+        long stop = scenario.getEndTime().toEpochMilli();
+
         TestResult testResult = new TestResult()
                 .setUuid(uuid)
                 .setName(scenario.getName())
                 .setFullName(scenario.getParentFeature().getName())
+                .setStart(start)
+                .setStop(stop)
                 .setHistoryId(ResultsUtils.md5(scenario.getParentFeature().getName()))
                 .setLabels(List.of(ResultsUtils.createFeatureLabel(scenario.getParentFeature().getName())));
 
@@ -52,6 +57,8 @@ public class AllureReporter implements IReporter {
         allureReport.stopTest(key);
 
         allureReport.updateTest(key, result -> {
+            result.setStart(start);
+            result.setStop(stop);
             result.setStatus(toAllureStatus(scenario.getStatus()));
 
             for (StepScenario step : scenario.getStepList()) {
