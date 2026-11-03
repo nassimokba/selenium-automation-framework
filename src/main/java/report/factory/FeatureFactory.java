@@ -10,7 +10,7 @@ public class FeatureFactory {
 
     public static Feature buildFeature(TestSourceRead event) {
         return Feature.builder()
-                .name(extractTicketKey(event.getSource()))
+                .id(extractTicketKey(event.getSource()))
                 .description(extractFeatureName(event.getSource()))
                 .uri(event.getUri())
                 .scenarios(new ArrayList<>())

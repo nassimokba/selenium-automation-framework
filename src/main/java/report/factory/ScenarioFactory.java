@@ -15,7 +15,7 @@ public class ScenarioFactory {
                 .uri(testCase.getUri())
                 .parentFeature(feature)
                 .line(testCase.getLocation().getLine())
-                .name(tag)
+                .id(tag)
                 .description(testCase.getName())
                 .stepList(new ArrayList<>())
                 .build();
