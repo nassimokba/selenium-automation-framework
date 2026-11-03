@@ -9,11 +9,14 @@ import java.util.ArrayList;
 public class ScenarioFactory {
 
     public static Scenario buildScenario(TestCase testCase, Feature feature) {
+        int index = testCase.getTags().size() - 1;
+        String tag = testCase.getTags().get(index).replace("@", "");
         return Scenario.builder()
                 .uri(testCase.getUri())
                 .featureName(feature.getName())
                 .line(testCase.getLocation().getLine())
-                .name(testCase.getName())
+                .name(tag)
+                .description(testCase.getName())
                 .stepList(new ArrayList<>())
                 .build();
     }
