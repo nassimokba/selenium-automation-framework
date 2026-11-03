@@ -16,6 +16,7 @@ public class Scenario {
 
     private URI uri;
     private int line;
+    private Feature parentFeature;
     private String featureName;
     private String name;
     private String description;
