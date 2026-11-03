@@ -16,6 +16,7 @@ output/
 
 # Sensitive or high-churn files
 .idea/
+.allure/
 target/
 *.iml
 *.ipr
