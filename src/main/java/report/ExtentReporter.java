@@ -13,6 +13,7 @@ import utils.LoggerUtils;
 
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,16 +23,6 @@ public class ExtentReporter implements IReporter {
     private final Map<String, ExtentTest> features = new HashMap<>();
     private Logger logger = LoggerUtils.getLogger(ExtentReporter.class);
     private ExtentReports extent;
-
-    private static String addCustomCss() {
-        return """
-                textarea {
-                    field-sizing: content;
-                    width: 100%;
-                    resize: none;
-                }
-                """;
-    }
 
     @Override
     public void createReport(String name, Path reportPath) {
@@ -48,6 +39,8 @@ public class ExtentReporter implements IReporter {
     @Override
     public void createScenario(Scenario scenario) {
         ExtentTest node = getOrCreateFeature(scenario.getParentFeature().getName()).createNode(scenario.getName());
+        node.getModel().setStartTime(Date.from(scenario.getStartTime()));
+        node.getModel().setEndTime(Date.from(scenario.getEndTime()));
         for (StepScenario stepScenario : scenario.getStepList())
             node.log(Status.PASS, stepScenario.getKeyword() + stepScenario.getText());
         if (scenario.getErrorMessage() != null) {
@@ -81,5 +74,15 @@ public class ExtentReporter implements IReporter {
 
     private String formatScreenshot(String base64) {
         return "<br/><img src='data:image/png;base64," + base64 + "' style='max-width:600px'/>";
+    }
+
+    private static String addCustomCss() {
+        return """
+                textarea {
+                    field-sizing: content;
+                    width: 100%;
+                    resize: none;
+                }
+                """;
     }
 }
