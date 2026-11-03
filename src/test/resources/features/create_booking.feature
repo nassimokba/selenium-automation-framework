@@ -1,6 +1,7 @@
-@create_booking
+@RB-100 @create_booking
 Feature: Create booking
 
+  @RB-101
   Scenario Outline: Successfully create a new booking
     Given I am on the Restful booker platform page
     When I select a stay of <stay_nights> nights starting <starting_from_days_ahead> days from today
@@ -17,6 +18,7 @@ Feature: Create booking
       | stay_nights | starting_from_days_ahead |
       | 3           | 5                        |
 
+  @RB-102
   Scenario Outline: Create a new booking with missing information - missing <missing_field>
     Given I am on the Restful booker platform page
     When I select a stay of 3 nights starting 2 days from today

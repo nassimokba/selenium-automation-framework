@@ -1,6 +1,7 @@
-@login
+@RB-400 @login
 Feature: Login
 
+  @RB-401
   Scenario Outline: Successful Login with valid credentials
     Given I am on the Restful booker platform page
     When I navigate to the Admin page
@@ -10,6 +11,7 @@ Feature: Login
     And I click on the login button
     Then I should be redirected to my dashboard
 
+    @RB-402
     Examples:
       | USER  | PASSWORD |
       | admin | password |
