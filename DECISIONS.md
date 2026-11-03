@@ -5,7 +5,9 @@
 * Use a singleton in `WebdriverManager` just to make the whole flow work. Will be replaced by Spring-managed bean when
   DI is introduced — Spring components
   are singletons by default. _[Sept. 29, 2026]_
-
+* Introduce a config management with `WebdriverConfig`.
+* Inject `WebdriverConfig` into `WebdriverManager` via constructor injection, and have it pass the config to `WebdriverFactory` when creating the driver.
+* Replace the individual parameters of `WebdriverFactory` with a single `WebdriverConfig` parameter.
 ### Reporting
 
 * Keep the Cucumber plugin unaware of reporting. The plugin only tells the global execution context what happened. A
