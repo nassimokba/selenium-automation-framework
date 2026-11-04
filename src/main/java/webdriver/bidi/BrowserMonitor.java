@@ -3,12 +3,14 @@ package webdriver.bidi;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
+import org.openqa.selenium.bidi.network.RequestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import webdriver.WebdriverManager;
 import webdriver.model.ConsoleError;
 import webdriver.model.NetworkError;
 
+import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -28,21 +30,23 @@ public class BrowserMonitor {
 
         logInspector.onConsoleEntry(e -> {
             if (LogLevel.ERROR.equals(e.getLevel())) {
-                observers.forEach(o -> o.onConsoleError(new ConsoleError("error", e.getText())));
+                observers.forEach(o -> o.onConsoleError(
+                        new ConsoleError(Instant.ofEpochMilli(e.getTimestamp()), "error", e.getText())));
             }
         });
         logInspector.onJavaScriptException(e ->
-                observers.forEach(o -> o.onConsoleError(new ConsoleError("js", e.getText()))));
+                observers.forEach(o -> o.onConsoleError(
+                        new ConsoleError(Instant.ofEpochMilli(e.getTimestamp()), "js", e.getText()))));
 
-        network.onResponseCompleted(r -> {
-            long status = r.getResponseData().getStatus();
-            if (status < 400) return;
-
-            var req = r.getRequest();
-            String body = null;
-            if ("POST".equalsIgnoreCase(req.getMethod())) body = fetchBody(req.getRequestId());
-            NetworkError error = new NetworkError(req.getMethod(), req.getUrl(), status, body);
-            observers.forEach(o -> o.onNetworkError(error));
+        network.onResponseCompleted(request -> {
+            long status = request.getResponseData().getStatus();
+            if (status >= 400) {
+                RequestData requestData = request.getRequest();
+                String body = null;
+                if ("POST".equalsIgnoreCase(requestData.getMethod())) body = fetchBody(requestData.getRequestId());
+                NetworkError error = new NetworkError(Instant.ofEpochMilli(request.getTimestamp()), requestData.getMethod(), requestData.getUrl(), status, body);
+                observers.forEach(o -> o.onNetworkError(error));
+            }
         });
     }
 
