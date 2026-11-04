@@ -40,19 +40,17 @@ public class ReportObserver implements ExecutionObserver {
 
     @Override
     public void onScenarioFinished(Scenario scenario) {
+        if (scenario.getConsoleError() != null) {
+            Path path = scenario.getPath().resolve(String.format("%s_console_errors.log", scenario.getId()));
+            FileUtils.writeContentToFile(path, scenario.getConsoleError().toString());
+            scenario.addAttachment(AttachmentFactory.plainText(path));
+        }
+        if (scenario.getNetworkError() != null) {
+            Path path = scenario.getPath().resolve(String.format("%s_network_errors.log", scenario.getId()));
+            FileUtils.writeContentToFile(path, scenario.getNetworkError().toString());
+            scenario.addAttachment(AttachmentFactory.plainText(path));
+        }
         reporter.createScenario(scenario);
-        String consoleErrors = scenario.getConsoleError().toString();
-        String networkErrors = scenario.getNetworkError().toString();
-        if (!consoleErrors.isEmpty()) {
-            Path path = scenario.getPath().resolve(String.format("%s_console_errors.log", scenario.getName()));
-            FileUtils.writeContentToFile(path, consoleErrors);
-            scenario.addAttachment(AttachmentFactory.plainText(path));
-        }
-        if (!networkErrors.isEmpty()) {
-            Path path = scenario.getPath().resolve(String.format("%s_network_errors.log", scenario.getName()));
-            FileUtils.writeContentToFile(path, networkErrors);
-            scenario.addAttachment(AttachmentFactory.plainText(path));
-        }
         reporter.writeReport();
     }
 
