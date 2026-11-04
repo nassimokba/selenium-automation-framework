@@ -7,14 +7,13 @@ import io.cucumber.java.Scenario;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import report.factory.AttachmentFactory;
 import utils.LoggerUtils;
 import webdriver.WebdriverManager;
 import webdriver.bidi.BrowserMonitor;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class CucumberHooks {
 
@@ -53,7 +52,8 @@ public class CucumberHooks {
                             String.format("%s_error", scenario.getId()));
 
             byte[] screenshotBytes = Files.readAllBytes(screenshot.toPath());
-            scenario.setScreenshot(screenshotBytes);
+            scenario.addAttachment(AttachmentFactory.screenshot(screenshotBytes));
+
             Files.deleteIfExists(screenshot.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
