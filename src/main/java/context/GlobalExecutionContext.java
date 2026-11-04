@@ -15,17 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Getter
 public class GlobalExecutionContext {
 
     @Autowired
     private ReportObserver reportObserver;
     @Value("${report.name}")
     private String reportName;
+    @Getter
     @Value("${report.output.path}")
     private String reportOutputPath;
+    @Getter
     private List<Feature> featureList = new ArrayList<>();
+    @Getter
     private Feature currentFeature;
+    @Getter
     private Scenario currentScenario;
     private String executionStartTimestamp;
 
@@ -46,6 +49,7 @@ public class GlobalExecutionContext {
     public void startScenario(Scenario scenario) {
         currentScenario = scenario;
         addScenario(scenario);
+        reportObserver.onScenarioStarted(scenario);
     }
 
     public void endScenario(Scenario scenario) {
