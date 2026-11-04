@@ -7,15 +7,15 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import report.model.Attachment;
 import report.model.Scenario;
 import report.model.StepScenario;
 import utils.LoggerUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Component
 public class ExtentReporter implements IReporter {
@@ -44,14 +44,18 @@ public class ExtentReporter implements IReporter {
         node.getModel().setStartTime(Date.from(scenario.getStartTime()));
         for (StepScenario stepScenario : scenario.getStepList())
             node.log(Status.PASS, stepScenario.getKeyword() + stepScenario.getText());
-        if (scenario.getErrorMessage() != null) {
-            if (scenario.getScreenshot() != null) {
-                String base64 = Base64.getEncoder().encodeToString(scenario.getScreenshot());
-                node.fail(String.format("%s %s", MarkupHelper.createCodeBlock(scenario.getErrorMessage()).getMarkup(),
+        if (toExtentStatus(scenario.getStatus()).equals(Status.FAIL)) {
+            List<Attachment> attachmentList = scenario.getAttachmentByType(MimeType.IMAGE_PNG);
+            for (Attachment attachment : attachmentList) {
+                String base64 = Base64.getEncoder().encodeToString(attachment.getContent());
+                node.fail(String.format("%s %s",
+                        MarkupHelper.createCodeBlock(scenario.getErrorMessage()).getMarkup(),
                         formatScreenshot(base64)));
-            } else node.fail(scenario.getErrorMessage());
+            }
+
+            attachmentList = scenario.getAttachmentByType(MimeType.TEXT_PLAIN);
+            node.info(createAttachmentBlock(attachmentList));
         }
-        //node.getModel().setEndTime(Date.from(scenario.getEndTime()));
         logger.info("createScenario {}", scenario.getId());
     }
 
@@ -79,8 +83,40 @@ public class ExtentReporter implements IReporter {
         return feature;
     }
 
+    private Status toExtentStatus(String status) {
+        switch (status.toUpperCase()) {
+            case "PASSED":
+                return Status.PASS;
+            case "FAILED":
+                return Status.FAIL;
+            case "SKIPPED":
+                return Status.SKIP;
+            default:
+                return Status.WARNING;
+        }
+    }
+
     private String formatScreenshot(String base64) {
         return "<br/><img src='data:image/png;base64," + base64 + "' style='max-width:600px'/>";
+    }
+
+    private String createAttachmentBlock(List<Attachment> attachmentList) {
+        StringBuilder html = new StringBuilder();
+        html.append("<p>Error log files:</p>");
+        html.append("<ol>");
+
+        for (Attachment attachment : attachmentList) {
+            String url = attachment.getPath().toAbsolutePath().toUri().toString();
+
+            html.append("<li><a href=\"")
+                    .append(url)
+                    .append("\" target=\"_blank\">")
+                    .append(attachment.getName())
+                    .append("</a></li>");
+        }
+        html.append("</ol>");
+
+        return html.toString();
     }
 
     private static String addCustomCss() {
