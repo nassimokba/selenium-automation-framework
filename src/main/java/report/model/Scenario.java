@@ -3,6 +3,7 @@ package report.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import report.MimeType;
 import webdriver.model.ConsoleError;
 import webdriver.model.NetworkError;
 
@@ -11,6 +12,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @Getter
@@ -64,5 +66,11 @@ public class Scenario {
 
     public void addNetworkError(NetworkError networkError) {
         this.networkError = networkError;
+    }
+
+    public List<Attachment> getAttachmentByType(MimeType type) {
+        return attachments.stream()
+                .filter(a -> a.getMimeType().equals(type))
+                .collect(Collectors.toList());
     }
 }
