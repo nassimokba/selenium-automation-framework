@@ -4,12 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 
 @Builder
 @Getter
 public class Feature {
     private final URI uri;
+    private final Path feature;
     private final String id;
     private final String description;
     private final List<Scenario> scenarios;

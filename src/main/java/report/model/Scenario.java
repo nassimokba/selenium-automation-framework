@@ -8,6 +8,7 @@ import webdriver.model.ConsoleError;
 import webdriver.model.NetworkError;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -21,6 +22,7 @@ public class Scenario {
     private URI uri;
     private int line;
     private Feature parentFeature;
+    private Path path;
     private String id;
     private String description;
     private Instant startTime;
