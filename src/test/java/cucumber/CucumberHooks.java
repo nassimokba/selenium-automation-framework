@@ -47,7 +47,7 @@ public class CucumberHooks {
 
     private void handleFailedScenario(report.model.Scenario scenario) {
         try {
-            String screenshotPath = Path.of(globalExecutionContext.getReportOutputPath()).toString();
+            String screenshotPath = scenario.getPath().toString();
             File screenshot = webdriverManager.getWebdriver()
                     .takeScreenshot(screenshotPath,
                             String.format("%s_error", scenario.getId()));
