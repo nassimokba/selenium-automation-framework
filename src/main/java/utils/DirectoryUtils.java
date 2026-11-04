@@ -15,6 +15,14 @@ public class DirectoryUtils {
         }
     }
 
+    public static Path createDirectory(Path path) {
+        try {
+            return Files.createDirectories(path);
+        } catch (IOException e) {
+            throw new UncheckedIOException(String.format("Could not create directory %s", path), e);
+        }
+    }
+
     public static boolean directoryExists(Path path) {
         return Files.exists(path);
     }
