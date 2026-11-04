@@ -3,8 +3,6 @@ package webdriver.bidi;
 import context.GlobalExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import webdriver.model.ConsoleError;
-import webdriver.model.NetworkError;
 
 @Component
 public class ScenarioEventRecorder implements BrowserEventObserver {

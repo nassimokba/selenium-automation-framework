@@ -7,8 +7,6 @@ import org.openqa.selenium.bidi.network.RequestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import webdriver.WebdriverManager;
-import webdriver.model.ConsoleError;
-import webdriver.model.NetworkError;
 
 import java.time.Instant;
 import java.util.List;

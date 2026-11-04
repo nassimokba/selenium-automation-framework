@@ -4,8 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import report.MimeType;
-import webdriver.model.ConsoleError;
-import webdriver.model.NetworkError;
+import webdriver.bidi.ConsoleError;
+import webdriver.bidi.NetworkError;
 
 import java.net.URI;
 import java.nio.file.Path;

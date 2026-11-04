@@ -1,4 +1,4 @@
-package webdriver.model;
+package webdriver.bidi;
 
 import lombok.Getter;
 import lombok.ToString;
