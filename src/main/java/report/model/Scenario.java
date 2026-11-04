@@ -1,6 +1,5 @@
 package report.model;
 
-import io.cucumber.java.sl.In;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +10,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.List;
 
 @Builder
@@ -34,6 +32,7 @@ public class Scenario {
     private byte[] screenshot;
     private ConsoleError consoleError;
     private NetworkError networkError;
+    private List<Attachment> attachments;
 
     public void addStep(StepScenario step) {
         stepList.add(step);
@@ -53,6 +52,10 @@ public class Scenario {
                 duration.toMinutes(),
                 duration.toSecondsPart(),
                 duration.toMillisPart());
+    }
+
+    public void addAttachment(Attachment attachment) {
+        attachments.add(attachment);
     }
 
     public void addConsoleError(ConsoleError consoleError) {
