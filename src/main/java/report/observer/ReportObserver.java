@@ -8,10 +8,11 @@ import report.AllureReporter;
 import report.ExtentReporter;
 import report.IReporter;
 import report.Reporters;
+import report.factory.AttachmentFactory;
 import report.model.Scenario;
 import utils.DirectoryUtils;
+import utils.FileUtils;
 import utils.LoggerUtils;
-
 import java.nio.file.Path;
 
 @Component
@@ -40,6 +41,18 @@ public class ReportObserver implements ExecutionObserver {
     @Override
     public void onScenarioFinished(Scenario scenario) {
         reporter.createScenario(scenario);
+        String consoleErrors = scenario.getConsoleError().toString();
+        String networkErrors = scenario.getNetworkError().toString();
+        if (!consoleErrors.isEmpty()) {
+            Path path = scenario.getPath().resolve(String.format("%s_console_errors.log", scenario.getName()));
+            FileUtils.writeContentToFile(path, consoleErrors);
+            scenario.addAttachment(AttachmentFactory.plainText(path));
+        }
+        if (!networkErrors.isEmpty()) {
+            Path path = scenario.getPath().resolve(String.format("%s_network_errors.log", scenario.getName()));
+            FileUtils.writeContentToFile(path, networkErrors);
+            scenario.addAttachment(AttachmentFactory.plainText(path));
+        }
         reporter.writeReport();
     }
 
