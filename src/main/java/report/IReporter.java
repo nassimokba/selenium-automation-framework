@@ -12,5 +12,7 @@ public interface IReporter {
 
     boolean isReportCreated();
 
+    Path getReportPath();
+
     void writeReport();
 }

@@ -86,6 +86,11 @@ public class AllureReporter implements IReporter {
     }
 
     @Override
+    public Path getReportPath() {
+        return reportPath;
+    }
+
+    @Override
     public void writeReport() {
         allureReport.writeTest(key);
         generateHTML();

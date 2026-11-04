@@ -23,9 +23,11 @@ public class ExtentReporter implements IReporter {
     private final Map<String, ExtentTest> features = new HashMap<>();
     private Logger logger = LoggerUtils.getLogger(ExtentReporter.class);
     private ExtentReports extent;
+    private Path reportPath;
 
     @Override
     public void createReport(String name, Path reportPath) {
+        this.reportPath = reportPath;
         String path = Path.of(reportPath.toString(), String.format("%s.html", name)).toString();
         ExtentSparkReporter extentSparkReporter = new ExtentSparkReporter(path);
         extentSparkReporter.config().setDocumentTitle("Cucumber Test Report");
@@ -40,7 +42,6 @@ public class ExtentReporter implements IReporter {
     public void createScenario(Scenario scenario) {
         ExtentTest node = getOrCreateFeature(scenario.getParentFeature().getName()).createNode(scenario.getName());
         node.getModel().setStartTime(Date.from(scenario.getStartTime()));
-        node.getModel().setEndTime(Date.from(scenario.getEndTime()));
         for (StepScenario stepScenario : scenario.getStepList())
             node.log(Status.PASS, stepScenario.getKeyword() + stepScenario.getText());
         if (scenario.getErrorMessage() != null) {
@@ -50,7 +51,13 @@ public class ExtentReporter implements IReporter {
                         formatScreenshot(base64)));
             } else node.fail(scenario.getErrorMessage());
         }
+        //node.getModel().setEndTime(Date.from(scenario.getEndTime()));
         logger.info("createScenario {}", scenario.getId());
+    }
+
+    @Override
+    public Path getReportPath() {
+        return reportPath;
     }
 
     @Override
