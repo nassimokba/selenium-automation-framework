@@ -9,6 +9,7 @@ import report.ExtentReporter;
 import report.IReporter;
 import report.Reporters;
 import report.model.Scenario;
+import utils.DirectoryUtils;
 import utils.LoggerUtils;
 
 import java.nio.file.Path;
@@ -26,6 +27,14 @@ public class ReportObserver implements ExecutionObserver {
     public void onExecutionStarted(String name, Path path) {
         if (reporter == null) initReport();
         if (!reporter.isReportCreated()) reporter.createReport(name, path);
+    }
+
+    @Override
+    public void onScenarioStarted(Scenario scenario) {
+        Path reportPath = reporter.getReportPath();
+        Path scenarioPath = reportPath.resolve(scenario.getParentFeature().getId()).resolve(scenario.getId());
+        DirectoryUtils.createDirectory(scenarioPath);
+        scenario.setPath(scenarioPath);
     }
 
     @Override
