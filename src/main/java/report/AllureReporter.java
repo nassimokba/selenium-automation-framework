@@ -11,6 +11,7 @@ import io.qameta.allure.model.TestResult;
 import io.qameta.allure.util.ResultsUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import report.model.Attachment;
 import report.model.Scenario;
 import report.model.StepScenario;
 import utils.LoggerUtils;
@@ -39,43 +40,34 @@ public class AllureReporter implements IReporter {
     @Override
     public void createScenario(Scenario scenario) {
         String uuid = UUID.randomUUID().toString();
-
-        long start = scenario.getStartTime().toEpochMilli();
-        long stop = scenario.getEndTime().toEpochMilli();
+        String fullName = String.format("%s: %s", scenario.getParentFeature().getName(), scenario.getName());
 
         TestResult testResult = new TestResult()
                 .setUuid(uuid)
                 .setName(scenario.getName())
-                .setFullName(scenario.getParentFeature().getName())
-                .setStart(start)
-                .setStop(stop)
-                .setHistoryId(ResultsUtils.md5(scenario.getParentFeature().getName()))
+                .setFullName(fullName)
+                .setHistoryId(ResultsUtils.md5(fullName))
                 .setLabels(List.of(ResultsUtils.createFeatureLabel(scenario.getParentFeature().getName())));
 
         allureReport.scheduleTest(key, testResult);
         allureReport.startTest(key);
         allureReport.stopTest(key);
 
+        Status status = toAllureStatus(scenario.getStatus());
+
         allureReport.updateTest(key, result -> {
-            result.setStart(start);
-            result.setStop(stop);
-            result.setStatus(toAllureStatus(scenario.getStatus()));
+            result.setStatus(status);
+            result.setStart(scenario.getStartTime().toEpochMilli());
+            result.setStop(scenario.getEndTime().toEpochMilli());
 
             for (StepScenario step : scenario.getStepList()) {
                 result.getSteps().add(new StepResult()
                         .setName(step.getText())
                         .setStatus(toAllureStatus(step.getStatus())));
             }
-
-            if (scenario.getErrorMessage() != null) {
+            if (status == Status.FAILED) {
                 result.setStatusDetails(new StatusDetails().setMessage(scenario.getErrorMessage()));
-                if (scenario.getScreenshot() != null) {
-                    allureReport.addAttachment(key,
-                            String.format("Screenshot scenario %s", scenario.getId()),
-                            "image/png",
-                            new ByteArrayInputStream(scenario.getScreenshot()),
-                            AttachmentOptions.empty());
-                }
+                addAttachements(scenario);
             }
         });
     }
@@ -114,7 +106,20 @@ public class AllureReporter implements IReporter {
         }
     }
 
+    private void addAttachements(Scenario scenario) {
+        List<Attachment> attachmentList = scenario.getAttachments();
+        for (Attachment attachment : attachmentList) {
+            allureReport.addAttachment(key,
+                    attachment.getName(),
+                    attachment.getMimeType().getValue(),
+                    new ByteArrayInputStream(attachment.getContent()),
+                    AttachmentOptions.empty());
+        }
+    }
+
     private Status toAllureStatus(String status) {
+        if (status == null) return Status.BROKEN;
+
         switch (status.toUpperCase()) {
             case "PASSED":
                 return Status.PASSED;
