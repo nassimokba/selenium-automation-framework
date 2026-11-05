@@ -18,7 +18,8 @@ jobs:
           cache: maven
 
       - name: Run tests
-        run: > mvn --batch-mode test 
+        run: > 
+          mvn --batch-mode test 
           -Dtest=AllFeaturesRunner 
           -Dbase.url=${{vars.BASE_URL}}
           -Dwebdriver.browser=${{vars.WEBDRIVER_BROWSER}}
