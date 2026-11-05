@@ -11,8 +11,8 @@ import report.factory.StepScenarioFactory;
 import report.model.Feature;
 import report.model.Scenario;
 import report.model.StepScenario;
-import utils.DateUtils;
 import utils.LoggerUtils;
+
 import java.net.URI;
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -75,15 +75,18 @@ public class TestEventListenerPlugin implements ConcurrentEventListener {
     }
 
     private void onTestStepFinished(TestStepFinished testStep) {
-        Scenario currentScenario = getCurrentScenario();
-        if (currentScenario != null && !currentScenario.getStepList().isEmpty()) {
-            currentScenario.getCurrentStep().updateStatus(testStep.getResult().getStatus().name());
-            if (testStep.getResult().getStatus().equals(Status.FAILED))
-                currentScenario.getCurrentStep().setErrorMessage(testStep.getResult().getError().getMessage());
-            logger.debug("onTestStepFinished - {} {} {}",
-                    currentScenario.getCurrentStep().getKeyword(),
-                    currentScenario.getCurrentStep().getText(),
-                    currentScenario.getCurrentStep().getStatus());
+        Step step = StepScenarioFactory.getStep(testStep.getTestStep());
+        if (step != null) {
+            Scenario currentScenario = getCurrentScenario();
+            if (currentScenario != null && currentScenario.hasSteps()) {
+                currentScenario.getCurrentStep().updateStatus(testStep.getResult().getStatus().name());
+                if (testStep.getResult().getStatus().equals(Status.FAILED))
+                    currentScenario.getCurrentStep().setErrorMessage(testStep.getResult().getError().getMessage());
+                logger.debug("onTestStepFinished - {} {} {}",
+                        currentScenario.getCurrentStep().getKeyword(),
+                        currentScenario.getCurrentStep().getText(),
+                        currentScenario.getCurrentStep().getStatus());
+            }
         }
     }
 
