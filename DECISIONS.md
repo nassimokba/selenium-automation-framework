@@ -22,11 +22,23 @@
   available at run start, so the plugin calls `startTestExecution()` on every scenario, and the global context only
   acts on the first call, when the start time isn't set yet: it creates the timestamped output folder and notifies
   the observers. _[Oct. 31, 2026]_
-* One single report per run, with no folder hierarchy per feature or scenario. Extent already groups scenarios by
-  feature, and a split would mean several reports plus the links between them. _[Oct. 31, 2026]_
-* Screenshots are a `byte[]` on `Scenario`, taken only on failure and embedded as base64 in the HTML. No png files to
-  manage, and other reporters can convert the same bytes to whatever format they need. _[Oct. 31, 2026]_
+* Attachments (screenshots and the console and network logs) are `Attachment` objects on `Scenario`, each with a name,
+  a `MimeType` and its content as `byte[]`. Reporters read the content from memory instead of from files on disk, so
+  each one can embed or copy it in whatever way it needs. _[Oct. 31, 2026]_
 * Each run writes to its own timestamped folder under `output`, created once at the start of the execution.
   _[Oct. 31, 2026]_
-* Custom report CSS lives in a single `customCss()` method inside `ExtentReporter`, so there's one place to look when
-  the report needs visual tweaks. _[Oct. 31, 2026]_
+
+### Allure
+* Use the `AllureLifecycle` API directly instead of the `allure-cucumber` plugin. The official plugin hooks into
+  Cucumber on its own, which would bypass the observer and the global execution context, so Allure would sit outside
+  the architecture. Writing an `IReporter` implementation keeps both reporters fed from the same `Scenario` objects.
+  _[Nov. 5, 2026]_
+* Build each Allure result after the scenario ends, from the finished `Scenario`. Allure needs start and end times
+  and a status for every result, so the domain objects carry that data instead of the reporter measuring it live
+  (as Extent does). _[Nov. 5, 2026]_
+* Build `fullName` and `historyId` from the feature name plus the scenario name, not from the scenario tag. Several
+  outlines share the same tag (`@RB-102`), and a shared `historyId` makes Allure treat different scenarios as
+  retries of one test. _[Nov. 5, 2026]_
+* Download the Allure CLI with Maven (`maven-dependency-plugin`) instead of requiring a local install, so the same
+  setup works on a developer machine and in CI. The HTML is regenerated after every scenario, so progress is
+  visible while the suite runs. _[Nov. 5, 2026]_
