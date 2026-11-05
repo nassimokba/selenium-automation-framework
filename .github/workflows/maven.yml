@@ -7,6 +7,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: test
     steps:
       - uses: actions/checkout@v4
 
@@ -17,7 +18,7 @@ jobs:
           cache: maven
 
       - name: Run tests
-        run: mvn --batch-mode test -Dtest=AllFeaturesRunner
+        run: mvn --batch-mode test -Dtest=AllFeaturesRunner -Dbase.url=${{vars.BASE_URL}} -Dwebdriver.browser=${{vars.WEBDRIVER_BROWSER}} -Dreport=${{vars.REPORTER || 'allure'}}
 
       - name: Upload reports
         if: always()
