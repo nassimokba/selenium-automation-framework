@@ -4,10 +4,7 @@ import exceptions.ReporterNotSupportedException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import report.AllureReporter;
-import report.ExtentReporter;
-import report.IReporter;
-import report.Reporters;
+import report.*;
 import report.factory.AttachmentFactory;
 import report.model.Scenario;
 import utils.DirectoryUtils;
@@ -43,12 +40,12 @@ public class ReportObserver implements ExecutionObserver {
         if (scenario.getConsoleError() != null) {
             Path path = scenario.getPath().resolve(String.format("%s_console_errors.log", scenario.getId()));
             FileUtils.writeContentToFile(path, scenario.getConsoleError().toString());
-            scenario.addAttachment(AttachmentFactory.plainText(path));
+            scenario.addAttachment(AttachmentFactory.buildAttachment(path, MimeType.TEXT_PLAIN));
         }
         if (scenario.getNetworkError() != null) {
             Path path = scenario.getPath().resolve(String.format("%s_network_errors.log", scenario.getId()));
             FileUtils.writeContentToFile(path, scenario.getNetworkError().toString());
-            scenario.addAttachment(AttachmentFactory.plainText(path));
+            scenario.addAttachment(AttachmentFactory.buildAttachment(path, MimeType.TEXT_PLAIN));
         }
         reporter.createScenario(scenario);
         reporter.writeReport();
