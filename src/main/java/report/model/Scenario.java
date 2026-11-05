@@ -64,6 +64,8 @@ public class Scenario {
         this.consoleError = consoleError;
     }
 
+    public boolean hasSteps() { return !stepList.isEmpty(); }
+
     public void addNetworkError(NetworkError networkError) {
         this.networkError = networkError;
     }
