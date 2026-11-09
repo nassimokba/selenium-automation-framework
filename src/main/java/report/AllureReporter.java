@@ -96,15 +96,14 @@ public class AllureReporter implements IReporter {
 
     public void generateHTML() {
         Path cli = Path.of("target", "allure-cli", "allure-2.44.0", "bin", "allure").toAbsolutePath();
-        Path html = reportPath.resolveSibling("allure-report");
 
         cli.toFile().setExecutable(true);
         try {
             Process process = new ProcessBuilder(
-                    cli.toString(), "generate", reportPath.toString(), "--clean", "-o", html.toString())
+                    cli.toString(), "generate", reportPath.toString(), "--clean", "-o", reportPath.toString())
                     .inheritIO()
                     .start();
-            if (process.waitFor() != 0) logger.error("Cannot generate {} file", html);
+            if (process.waitFor() != 0) logger.error("Cannot generate {} file", reportPath.toString());
         } catch (IOException e) {
             logger.warn("Allure report CLI not found.");
         } catch (InterruptedException e) {
