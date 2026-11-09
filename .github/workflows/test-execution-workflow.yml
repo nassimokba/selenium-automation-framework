@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reports
-          path: output
+          path: reports
 
       - name: Publish reports
         if: always() && github.ref == 'refs/heads/main'
