@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.nio.file.Path;
 
 @Component
@@ -15,6 +14,7 @@ public class ReportConfig {
     private String reportName;
     @Setter
     private Path reportPath;
+    @Setter
     private Path reportArtifactsPath;
 
     public ReportConfig(@Value("${report.type}") String reportType,
