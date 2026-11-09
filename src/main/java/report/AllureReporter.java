@@ -12,6 +12,7 @@ import io.qameta.allure.util.ResultsUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import report.model.Attachment;
+import report.model.ReportConfig;
 import report.model.Scenario;
 import report.model.StepScenario;
 import utils.LoggerUtils;
@@ -29,11 +30,13 @@ public class AllureReporter implements IReporter {
     private AllureLifecycle allureReport;
     private AllureExternalKey key;
     private Path reportPath;
+    private Path reportArtifactsPath;
 
     @Override
-    public void createReport(String name, Path reportPath) {
-        this.reportPath = reportPath;
-        allureReport = new AllureLifecycle(new FileSystemResultsWriter(reportPath));
+    public void createReport(ReportConfig reportConfig) {
+        this.reportPath = reportConfig.getReportPath();
+        this.reportArtifactsPath = reportConfig.getReportArtifactsPath();
+        allureReport = new AllureLifecycle(new FileSystemResultsWriter(reportArtifactsPath));
         key = AllureExternalKey.random(AllureReporter.class);
     }
 
@@ -81,6 +84,9 @@ public class AllureReporter implements IReporter {
     public Path getReportPath() {
         return reportPath;
     }
+
+    @Override
+    public Path getReportArtifactsPath() { return reportArtifactsPath; }
 
     @Override
     public void writeReport() {

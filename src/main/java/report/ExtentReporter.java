@@ -8,6 +8,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import report.model.Attachment;
+import report.model.ReportConfig;
 import report.model.Scenario;
 import report.model.StepScenario;
 import utils.LoggerUtils;
@@ -24,11 +25,13 @@ public class ExtentReporter implements IReporter {
     private Logger logger = LoggerUtils.getLogger(ExtentReporter.class);
     private ExtentReports extent;
     private Path reportPath;
+    private Path reportArtifactsPath;
 
     @Override
-    public void createReport(String name, Path reportPath) {
+    public void createReport(ReportConfig reportConfig) {
         this.reportPath = reportPath;
-        String path = Path.of(reportPath.toString(), String.format("%s.html", name)).toString();
+        this.reportArtifactsPath = reportArtifactsPath;
+        String path = Path.of(reportPath.toString(), String.format("%s.html", reportConfig.getReportName())).toString();
         ExtentSparkReporter extentSparkReporter = new ExtentSparkReporter(path);
         extentSparkReporter.config().setDocumentTitle("Cucumber Test Report");
         extentSparkReporter.config().setReportName("Selenium Test Automation Report");
@@ -63,6 +66,9 @@ public class ExtentReporter implements IReporter {
     public Path getReportPath() {
         return reportPath;
     }
+
+    @Override
+    public Path getReportArtifactsPath() { return reportArtifactsPath; }
 
     @Override
     public void writeReport() {

@@ -16,16 +16,14 @@ import java.nio.file.Path;
 public class ReportObserver implements ExecutionObserver {
 
     private Logger logger = LoggerUtils.getLogger(ReportObserver.class);
-    private String report;
     private IReporter reporter;
+    private ReportConfig reportConfig;
 
     @Override
     public void onExecutionStarted(ReportConfig reportConfig) {
+        this.reportConfig = reportConfig;
         if (reporter == null) initReport();
-        if (!reporter.isReportCreated()) reporter.createReport(
-                reportConfig.getReportName(),
-                reportConfig.getReportPath().resolve(reportConfig.getReportType()),
-                reportConfig.getReportArtifactsPath().resolve(reportConfig.getReportType()));
+        if (!reporter.isReportCreated()) reporter.createReport(reportConfig);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class ReportObserver implements ExecutionObserver {
     }
 
     private void initReport() {
-        Reporters tool = Reporters.valueOf(report.toUpperCase());
+        Reporters tool = Reporters.valueOf(reportConfig.getReportType().toUpperCase());
         switch (tool) {
             case EXTENT:
                 reporter = new ExtentReporter();
@@ -62,7 +60,7 @@ public class ReportObserver implements ExecutionObserver {
                 reporter = new AllureReporter();
                 break;
             default:
-                throw new ReporterNotSupportedException(report);
+                throw new ReporterNotSupportedException(reportConfig.getReportType());
         }
     }
 }
