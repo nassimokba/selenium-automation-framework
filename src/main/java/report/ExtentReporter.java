@@ -59,12 +59,6 @@ public class ExtentReporter implements IReporter {
         }
         logger.info("createScenario {}", scenario.getId());
     }
-
-    @Override
-    public Path getReportPath() {
-        return reportConfig.getReportPath();
-    }
-
     @Override
     public Path getReportArtifactsPath() { return reportConfig.getReportArtifactsPath(); }
 

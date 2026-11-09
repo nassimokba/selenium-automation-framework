@@ -13,8 +13,6 @@ public interface IReporter {
 
     boolean isReportCreated();
 
-    Path getReportPath();
-
     Path getReportArtifactsPath();
 
     void writeReport();

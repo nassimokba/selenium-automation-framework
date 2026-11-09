@@ -81,11 +81,6 @@ public class AllureReporter implements IReporter {
     }
 
     @Override
-    public Path getReportPath() {
-        return reportPath;
-    }
-
-    @Override
     public Path getReportArtifactsPath() { return reportArtifactsPath; }
 
     @Override
