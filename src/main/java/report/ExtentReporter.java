@@ -24,14 +24,12 @@ public class ExtentReporter implements IReporter {
     private final Map<String, ExtentTest> features = new HashMap<>();
     private Logger logger = LoggerUtils.getLogger(ExtentReporter.class);
     private ExtentReports extent;
-    private Path reportPath;
-    private Path reportArtifactsPath;
+    private ReportConfig reportConfig;
 
     @Override
     public void createReport(ReportConfig reportConfig) {
-        this.reportPath = reportPath;
-        this.reportArtifactsPath = reportArtifactsPath;
-        String path = Path.of(reportPath.toString(), String.format("%s.html", reportConfig.getReportName())).toString();
+        this.reportConfig = reportConfig;
+        String path = Path.of(reportConfig.getReportPath().toString(), String.format("%s.html", reportConfig.getReportName())).toString();
         ExtentSparkReporter extentSparkReporter = new ExtentSparkReporter(path);
         extentSparkReporter.config().setDocumentTitle("Cucumber Test Report");
         extentSparkReporter.config().setReportName("Selenium Test Automation Report");
@@ -64,11 +62,11 @@ public class ExtentReporter implements IReporter {
 
     @Override
     public Path getReportPath() {
-        return reportPath;
+        return reportConfig.getReportPath();
     }
 
     @Override
-    public Path getReportArtifactsPath() { return reportArtifactsPath; }
+    public Path getReportArtifactsPath() { return reportConfig.getReportArtifactsPath(); }
 
     @Override
     public void writeReport() {
