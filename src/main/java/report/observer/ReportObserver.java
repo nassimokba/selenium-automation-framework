@@ -2,10 +2,10 @@ package report.observer;
 
 import exceptions.ReporterNotSupportedException;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import report.*;
 import report.factory.AttachmentFactory;
+import report.model.ReportConfig;
 import report.model.Scenario;
 import utils.DirectoryUtils;
 import utils.FileUtils;
@@ -16,20 +16,21 @@ import java.nio.file.Path;
 public class ReportObserver implements ExecutionObserver {
 
     private Logger logger = LoggerUtils.getLogger(ReportObserver.class);
+    private String report;
     private IReporter reporter;
 
-    @Value("${report}")
-    private String report;
-
     @Override
-    public void onExecutionStarted(String name, Path path) {
+    public void onExecutionStarted(ReportConfig reportConfig) {
         if (reporter == null) initReport();
-        if (!reporter.isReportCreated()) reporter.createReport(name, path);
+        if (!reporter.isReportCreated()) reporter.createReport(
+                reportConfig.getReportName(),
+                reportConfig.getReportPath().resolve(reportConfig.getReportType()),
+                reportConfig.getReportArtifactsPath().resolve(reportConfig.getReportType()));
     }
 
     @Override
     public void onScenarioStarted(Scenario scenario) {
-        Path reportPath = reporter.getReportPath();
+        Path reportPath = reporter.getReportArtifactsPath();
         Path scenarioPath = reportPath.resolve(scenario.getParentFeature().getId()).resolve(scenario.getId());
         DirectoryUtils.createDirectory(scenarioPath);
         scenario.setPath(scenarioPath);
