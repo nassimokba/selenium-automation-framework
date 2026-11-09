@@ -2,14 +2,13 @@ package context;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import report.model.Feature;
+import report.model.ReportConfig;
 import report.model.Scenario;
 import report.observer.ReportObserver;
 import utils.DateUtils;
 import utils.DirectoryUtils;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +17,9 @@ import java.util.List;
 public class GlobalExecutionContext {
 
     @Autowired
+    private ReportConfig reportConfig;
+    @Autowired
     private ReportObserver reportObserver;
-    @Value("${report.name}")
-    private String reportName;
-    @Getter
-    @Value("${report.output.path}")
-    private String reportOutputPath;
     @Getter
     private List<Feature> featureList = new ArrayList<>();
     @Getter
@@ -35,9 +31,10 @@ public class GlobalExecutionContext {
     public void startTestExecution() {
         if (!isStartTimeSet()) {
             executionStartTimestamp = DateUtils.currentTimestamp(DateUtils.YYYYMMDD_HHMMSS);
-            Path executionPath = DirectoryUtils.createDirectory(executionStartTimestamp, Path.of(reportOutputPath));
-            reportObserver.onExecutionStarted(reportName, executionPath);
-            reportOutputPath = executionPath.toString();
+            Path executionPath = DirectoryUtils.createDirectory(executionStartTimestamp, reportConfig.getReportPath());
+            Path artifactsPath = DirectoryUtils.createDirectory(reportConfig.getReportArtifactsPath().resolve(executionStartTimestamp));
+            reportObserver.onExecutionStarted(reportConfig.getReportName(), executionPath, artifactsPath);
+            reportConfig.setReportPath(executionPath);
         }
     }
 
