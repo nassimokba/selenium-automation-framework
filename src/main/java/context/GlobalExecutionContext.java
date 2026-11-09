@@ -31,8 +31,14 @@ public class GlobalExecutionContext {
     public void startTestExecution() {
         if (!isStartTimeSet()) {
             executionStartTimestamp = DateUtils.currentTimestamp(DateUtils.YYYYMMDD_HHMMSS);
-            Path executionPath = DirectoryUtils.createDirectory(executionStartTimestamp, reportConfig.getReportPath());
-            Path artifactsPath = DirectoryUtils.createDirectory(reportConfig.getReportArtifactsPath().resolve(executionStartTimestamp));
+            String reportType = String.format("%s_%s", executionStartTimestamp, reportConfig.getReportType());
+
+            Path executionPath = DirectoryUtils.createDirectory(
+                    reportConfig.getReportPath().resolve(reportType));
+
+            Path artifactsPath = DirectoryUtils.createDirectory(
+                    reportConfig.getReportArtifactsPath().resolve(reportType));
+
             reportConfig.setReportPath(executionPath);
             reportConfig.setReportArtifactsPath(artifactsPath);
             reportObserver.onExecutionStarted(reportConfig);
