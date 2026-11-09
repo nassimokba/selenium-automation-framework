@@ -6,7 +6,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 artifacts/
-output/
+reports/
 .proxyai
 
 # AWS User-specific
